@@ -1,52 +1,139 @@
-# Prerequisites
-*.d
+########################################
+# Build artifacts
+########################################
+bin/
+obj/
+out/
+artifacts/
 
-# Object files
-*.o
-*.ko
-*.obj
-*.elf
+# Debug/Release folders
+Debug/
+Release/
 
-# Linker output
-*.ilk
-*.map
-*.exp
+########################################
+# Rider (JetBrains)
+########################################
+.idea/
+*.sln.iml
 
-# Precompiled Headers
-*.gch
-*.pch
+########################################
+# Visual Studio
+########################################
+.vs/
+*.user
+*.suo
+*.sln.docstates
+*.userosscache
 
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
+########################################
+# VS Code
+########################################
+.vscode/
 
-# Shared objects (inc. Windows DLLs)
+########################################
+# NuGet
+########################################
+*.nupkg
+*.snupkg
+*.nuspec
+.nuget/
+packages/
+project.lock.json
+project.fragment.lock.json
+
+########################################
+# Dotnet CLI
+########################################
+*.deps.json
+*.runtimeconfig.json
 *.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
 *.exe
-*.out
+
+########################################
+# Logs
+########################################
+*.log
+
+########################################
+# Coverage, Testing, Profiling
+########################################
+coverage/
+*.coverage
+*.coveragexml
+TestResults/
+*.testresults
+*.vsp
+*.vspx
+*.sap
+*.psess
+*.psess.runconfig
+*.dotCover
+
+########################################
+# Temporary & IDE Configs
+########################################
+*.tmp
+*.bak
+*.old
+*.orig
+*.swp
+*.sln.cache
+*.userprefs
+*.pidb
+
+########################################
+# OS-generated
+########################################
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+########################################
+# Compiled files
+########################################
+*.dll
+*.exe
 *.app
-*.i*86
-*.x86_64
-*.hex
-
-# Debug files
-*.dSYM/
-*.su
-*.idb
+*.so
+*.dylib
+*.a
+*.lib
 *.pdb
-
-# Kernel Module Compile Results
-*.mod*
+*.mdb
+*.ilk
+*.idb
+*.obj
+*.o
+*.lo
+*.sbr
+*.mod
 *.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
+
+########################################
+# Other IDEs / Tools
+########################################
+*.ReSharper
+*.DotSettings.user
+*.ncrunch*
+*.orig
+.idea_modules/
+*.tmproj
+*.tmproject
+
+########################################
+# JetBrains specific (optional)
+########################################
+.idea/.idea.WebServers.xml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+
+########################################
+# Git & Git LFS
+########################################
+*.lock
+*.lfsconfig
+*.gitattributes.lock
