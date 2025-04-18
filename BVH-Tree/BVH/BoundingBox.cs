@@ -1,7 +1,7 @@
-﻿namespace BVH_Tree.BVH
-{
-    public class BoundingBox
-    {
+﻿namespace BVH_Tree.BVH {
+
+    public class BoundingBox {
+    
         
     }
 }

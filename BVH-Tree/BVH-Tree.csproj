@@ -45,6 +45,8 @@
         <Compile Include="BVH\BVHTree.cs" />
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
+        <Compile Include="Scene\Scene.cs" />
+        <Compile Include="Scene\Triangle.cs" />
         <Compile Include="Utils\MathUtils.cs" />
         <Compile Include="Utils\Vector3.cs" />
     </ItemGroup>
