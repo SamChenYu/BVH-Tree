@@ -10,65 +10,19 @@ namespace BVH_Tree {
     
         public static void Main(string[] args) {
             
-            // Init triangles
+            // Init triangles / primitives
             List<Triangle> primitives = new List<Triangle>();
-            for (int i = 0; i < 10; i++) { 
-                primitives.Add(new Triangle(
-                    new Vector3(i, i, i),
-                    new Vector3(i, i, i),
-                    new Vector3(i, i, i)
-                ));
-                
-            }
-            
+            primitives.Add(new Triangle(new Vector3(0,1,0), new Vector3(3, 2, 0), new Vector3(1,4,0)));
+            primitives.Add(new Triangle(new Vector3(2,5,0), new Vector3(4,6,0), new Vector3(5,7,0)));
+            primitives.Add(new Triangle(new Vector3(5,7,0), new Vector3(6,7,0), new Vector3(7,6,7)));
             foreach (Triangle triangle in primitives) {
                 triangle.Print();
             }
-
-
-
-            BVHNode root = new BVHNode(1);
-            root.left = (new BVHNode(2));
-            root.right = (new BVHNode(3));
-            root.left.left = (new BVHNode(4));
-            root.left.right = (new BVHNode(5));
-            root.right.left = (new BVHNode(6));
-            root.right.right = (new BVHNode(7));
             
-            PrintTree(root);
-
-        }
-
-        
-        public static BVHNode BuildTree(List<Triangle> primitives) {
-            BVHNode root = new BVHNode();
-            return root;
-        }
-
-
-        public static void PrintTree(BVHNode root) {
-            // Breadth first search for print ordering
-            if (root == null) return;
+            BVHTree tree = new BVHTree(primitives);
+            tree.BuildTree();
+            tree.PrintTree();
             
-            Queue<BVHNode> queue = new Queue<BVHNode>();
-            queue.Enqueue(root);
-            
-            while (queue.Count > 0) {
-                int levelSize = queue.Count;
-                string currentLevel = "";
-
-                for (int i = 0; i < levelSize; i++) {
-                    BVHNode node = queue.Dequeue();
-                    currentLevel += node.value + " " ;
-                    if(node.left != null) queue.Enqueue(node.left);
-                    if (node.right != null) queue.Enqueue(node.right);
-                }
-                
-                Console.WriteLine($"Level: {levelSize} : {currentLevel}");
-            }
         }
-        
-        
-        
     }
 }
