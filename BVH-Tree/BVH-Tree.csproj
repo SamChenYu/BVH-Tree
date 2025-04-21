@@ -42,7 +42,7 @@
     <ItemGroup>
         <Compile Include="BVH\BoundingBox.cs" />
         <Compile Include="BVH\BVHNode.cs" />
-        <Compile Include="BVH\BVHTree.cs" />
+        <Compile Include="BVH\PrimitiveInfo.cs" />
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="Scene\Scene.cs" />

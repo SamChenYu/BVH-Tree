@@ -2,12 +2,14 @@
 
     public class Vector3     {
 
-        private float x, y, z;
-        public Vector3(float x, float y, float z) {
-        
-            this.x = x;
-            this.y = y;
-            this.z = z;
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
+
+        public Vector3(float X, float Y, float Z) {
+            this.X = X;
+            this.Y = Y;
+            this.Z = Z;
         }
     }
 }
