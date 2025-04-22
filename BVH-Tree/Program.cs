@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using BVH_Tree.BVH;
 using BVH_Tree.Scene;
 using BVH_Tree.Utils;
@@ -20,7 +21,7 @@ namespace BVH_Tree {
             }
             
             BVHNode root = BVHTree.BuildTree(primitives);
-            
+            BVHTree.PrintTree(root);
             
             
         }

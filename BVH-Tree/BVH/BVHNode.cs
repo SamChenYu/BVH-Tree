@@ -11,8 +11,7 @@ namespace BVH_Tree.BVH {
         public BVHNode Right { get; set; }
         
         /* The Bounds of ALL children */
-        public Vector3 MaxBounds { get; set; }
-        public Vector3 MinBounds { get; set; }
+        public Bounds3 Bounds { get; set; }
         
         /* Coordinate axis which primitive children are split */
         public int SplitAxis { get; set; }
@@ -23,20 +22,30 @@ namespace BVH_Tree.BVH {
         public int NPrimitives { get; set; }
         
         
-        public int Value { get; set; }
+        public String Value { get; set; }
         
-        public BVHNode(int value) {
-            this.Value = value;
-        }
 
-
-        public void InitLeaf(int first, int n, Vector3 maxBounds, Vector3 minBounds) {
-            FirstPrimOffset = first;
-            NPrimitives = n;
-            MaxBounds = maxBounds;
-            MinBounds = minBounds;
+        public BVHNode() {
             Left = null;
             Right = null;
+        }
+
+        public void UpdateValue() {
+            if (Left == null && Right == null) {
+                Value = $"Leaf [{FirstPrimOffset} - {FirstPrimOffset + NPrimitives}]";
+            }
+            else {
+                Value = $"Interior [Axis: {SplitAxis}, Bounds: {Bounds.ToString()}]";
+            }
+        }
+
+        public void InitLeaf(int first, int n, Bounds3 bounds) {
+            FirstPrimOffset = first;
+            NPrimitives = n;
+            Bounds = bounds;
+            Left = null;
+            Right = null;
+            UpdateValue();
         }
 
         public void InitInterior(int axis, BVHNode left, BVHNode right) {
@@ -44,24 +53,12 @@ namespace BVH_Tree.BVH {
             Right = right;
             Left = left;
             NPrimitives = 0;
-            MinBounds= new Vector3(
-                Math.Min(left.MinBounds.X, right.MinBounds.X),
-                Math.Min(left.MinBounds.Y, right.MinBounds.Y),
-                Math.Min(left.MinBounds.Z, right.MinBounds.Z)
-            );
-
-            MaxBounds = new Vector3(
-                Math.Max(left.MaxBounds.X, right.MaxBounds.X),
-                Math.Max(left.MaxBounds.Y, right.MaxBounds.Y),
-                Math.Max(left.MaxBounds.Z, right.MaxBounds.Z)
-            );
+            Bounds = new Bounds3();
+            Bounds.InitBounds(Left.Bounds, Right.Bounds);
+            UpdateValue();
         }
         
         
-        public BVHNode() {
-            Left = null;
-            Right = null;
-        }
 
     }
 }

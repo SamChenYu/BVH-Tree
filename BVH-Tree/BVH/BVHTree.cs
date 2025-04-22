@@ -6,12 +6,13 @@ using BVH_Tree.Utils;
 namespace BVH_Tree.BVH {
     public static class BVHTree {
         
-        public static string SPLIT_METHOD = "EQUALCOUNTS"; // EQUALCOUNTS, MIDDLE, SAH
+        private static string SPLIT_METHOD = "EQUALCOUNTS"; // EQUALCOUNTS, MIDDLE, SAH
         
         public static BVHNode BuildTree(List<Triangle> primitives) {
-            List<PrimitiveInfo> primitivesInfo = GetPrimitveInfo(primitives); // Indices in primitivesInfo correspond to primitives
-
-            BVHNode root = BuildRecursive(primitives, primitivesInfo, 0, primitivesInfo.Count, 0, primitives);
+            List<PrimitiveInfo> primitivesInfo = GetPrimitveInfo(primitives);
+            List<Triangle> orderedPrimitives = new List<Triangle>();
+            int totalNodes = 0;
+            BVHNode root = BuildRecursive(primitives, primitivesInfo, 0, primitivesInfo.Count, ref totalNodes, orderedPrimitives);
             return root;
         }
 
@@ -35,40 +36,35 @@ namespace BVH_Tree.BVH {
                 float MaxY = Math.Max(triangle.V1.Y, Math.Max(triangle.V2.Y, triangle.V3.Y));
                 float MaxZ = Math.Max(triangle.V1.Z, Math.Max(triangle.V2.Z, triangle.V3.Z));
                 Vector3 MaxCorner = new Vector3(MaxX, MaxY, MaxZ);
-                primitivesInfo.Add(new PrimitiveInfo(MinCorner, MaxCorner, i));
+                
+                Bounds3 PrimitiveBounds = new Bounds3(MinCorner, MaxCorner);
+                primitivesInfo.Add(new PrimitiveInfo(PrimitiveBounds, i));
             }
             return primitivesInfo;
         }
 
         private static BVHNode BuildRecursive(List<Triangle> primitives, List<PrimitiveInfo> primitiveInfo, int start, int end, 
-                                                int totalNodes, List<Triangle> orderedPrimitives ) {
+                                                ref int totalNodes, List<Triangle> orderedPrimitives ) {
             
             BVHNode node = new BVHNode();
-            totalNodes++; // Check if it is pass by reference or pass by address
+            totalNodes++;
             
             // Compute bounds of all primitives in BVH Node
-            Vector3 minBounds = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-            Vector3 maxBounds = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+            Bounds3 NodeBounds = new Bounds3();
             for (int i = 0; i < primitiveInfo.Count; i++) {
-                minBounds.X = Math.Min(minBounds.X, primitiveInfo[i].MinCorner.X);
-                minBounds.Y = Math.Min(minBounds.Y, primitiveInfo[i].MinCorner.Y);
-                minBounds.Z = Math.Min(minBounds.Z, primitiveInfo[i].MinCorner.Z);
-                maxBounds.X = Math.Max(maxBounds.X, primitiveInfo[i].MaxCorner.X);
-                maxBounds.Y = Math.Max(maxBounds.Y, primitiveInfo[i].MaxCorner.Y);
-                maxBounds.Z = Math.Max(maxBounds.Z, primitiveInfo[i].MaxCorner.Z);
+                NodeBounds.Union(primitiveInfo[i].Bounds.Min);
+                NodeBounds.Union(primitiveInfo[i].Bounds.Max);
             }
-            
-
             int nPrimitives = end - start;
-            if (nPrimitives == 1) {
+
+            if (nPrimitives <= 1) {
                 // Create leaf BVH Node
                 int firstPrimOffset = orderedPrimitives.Count;
                 for (int i = start; i < end; i++) {
                     int primNumber = primitiveInfo[i].PrimitiveIndex;
                     orderedPrimitives.Add(primitives[primNumber]);
                 }
-                
-                node.InitLeaf(firstPrimOffset, nPrimitives, maxBounds, minBounds);
+                node.InitLeaf(firstPrimOffset, nPrimitives, NodeBounds);
                 return node;
             }
             else {
@@ -86,7 +82,7 @@ namespace BVH_Tree.BVH {
                 }
                 
                 // Choose the largest dimension to split amongst
-                Vector3 diff = maxBounds - minBounds;
+                Vector3 diff = NodeBounds.Max - NodeBounds.Min;
                 int axis;
                 if (diff.X > diff.Y && diff.X > diff.Z) axis = 0; // X axis
                 else if (diff.Y > diff.Z) axis = 1; // Y axis
@@ -104,19 +100,30 @@ namespace BVH_Tree.BVH {
                         int primNumber = primitiveInfo[i].PrimitiveIndex;
                         orderedPrimitives.Add(primitives[primNumber]);
                     }
-                    node.InitLeaf(firstPrimOffset, nPrimitives, maxBounds, minBounds);
+                    node.InitLeaf(firstPrimOffset, nPrimitives, NodeBounds);
                     return node;
                 }
                 else {
                     // Partition primitives based on splitMethod
                     switch (SPLIT_METHOD) {
                         case "MIDDLE":
-                            // Partition primitives through nodes midpoint
-                            // Cut at the middle of the bounding box and split at the axis
+                            // Partition primitives through node midpoint (Edge case -> all primitives partition to one side, creating a degenerate tree)
+                            int midIndex = start;
                             float midpoint = (centroidMaxBounds.getAxis(axis) + centroidMinBounds.getAxis(axis)) / 2;
-                            
                             // Reorder primitives based on midpoint
-
+                            
+                            for (int i = start; i < end; i++) {
+                                float centroid = primitiveInfo[i].Centroid.getAxis(axis);
+                                if (centroid < midpoint) {
+                                    PrimitiveInfo temp = primitiveInfo[i];
+                                    primitiveInfo[i] = primitiveInfo[midIndex];
+                                    primitiveInfo[midIndex] = temp;
+                                    midIndex++;
+                                }
+                            }
+                            
+                            
+                            
 
                             break;
                         case "EQUALCOUNTS":
@@ -129,8 +136,8 @@ namespace BVH_Tree.BVH {
                     }
                 }
                 
-                node.InitInterior(axis, BuildRecursive(primitives, primitiveInfo, start, mid, totalNodes, orderedPrimitives), 
-                            BuildRecursive(primitives, primitiveInfo, mid, end, totalNodes, orderedPrimitives));;   
+                node.InitInterior(axis, BuildRecursive(primitives, primitiveInfo, start, mid,ref totalNodes, orderedPrimitives), 
+                            BuildRecursive(primitives, primitiveInfo, mid, end, ref totalNodes, orderedPrimitives));;   
                 
                 
             }
@@ -148,19 +155,20 @@ namespace BVH_Tree.BVH {
             
             Queue<BVHNode> queue = new Queue<BVHNode>();
             queue.Enqueue(Root);
-            
+            int treeDepth = 0;
             while (queue.Count > 0) {
-                int levelSize = queue.Count;
+                int levelCount = queue.Count;
                 string currentLevel = "";
 
-                for (int i = 0; i < levelSize; i++) {
+                for (int i = 0; i < levelCount; i++) {
                     BVHNode node = queue.Dequeue();
-                    currentLevel += node.Value + " " ;
+                    currentLevel += $"({node.Value})" ;
                     if(node.Left != null) queue.Enqueue(node.Left);
                     if (node.Right != null) queue.Enqueue(node.Right);
                 }
                 
-                Console.WriteLine($"Level: {levelSize} : {currentLevel}");
+                Console.WriteLine($"Depth: {treeDepth} : {currentLevel}");
+                treeDepth++;
             }
         }
 
