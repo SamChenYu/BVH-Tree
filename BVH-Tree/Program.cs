@@ -19,9 +19,9 @@ namespace BVH_Tree {
                 triangle.Print();
             }
             
-            BVHTree tree = new BVHTree(primitives);
-            tree.BuildTree();
-            tree.PrintTree();
+            BVHNode root = BVHTree.BuildTree(primitives);
+            
+            
             
         }
     }

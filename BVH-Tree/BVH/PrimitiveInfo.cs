@@ -6,10 +6,11 @@ namespace BVH_Tree.BVH {
         /* BOUNDING BOX */
         public Vector3 MinCorner { get; set; }
         public Vector3 MaxCorner { get; set; }
-
         public Vector3 Centroid { get; set; }
+        
+        public int PrimitiveIndex { get; set; }
 
-        public PrimitiveInfo(Vector3 MinCorner, Vector3 MaxCorner) {
+        public PrimitiveInfo(Vector3 MinCorner, Vector3 MaxCorner, int primitiveIndex) {
             this.MinCorner = MinCorner;
             this.MaxCorner = MaxCorner;
             this.Centroid = new Vector3(
@@ -17,6 +18,7 @@ namespace BVH_Tree.BVH {
                 (MinCorner.Y + MaxCorner.Y) / 2,
                 (MinCorner.Z + MaxCorner.Z) / 2
             );
+            this.PrimitiveIndex = primitiveIndex;
         }
         
         
