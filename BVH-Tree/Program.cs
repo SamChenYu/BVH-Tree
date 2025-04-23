@@ -13,17 +13,35 @@ namespace BVH_Tree {
             
             // Init triangles / primitives
             List<Triangle> primitives = new List<Triangle>();
-            primitives.Add(new Triangle(new Vector3(0,1,0), new Vector3(3, 2, 0), new Vector3(1,4,0)));
-            primitives.Add(new Triangle(new Vector3(2,5,0), new Vector3(4,6,0), new Vector3(5,7,0)));
-            primitives.Add(new Triangle(new Vector3(5,7,0), new Vector3(6,7,0), new Vector3(7,6,7)));
+            primitives.Add(new Triangle(1, new Vector3(0,1,0), new Vector3(3, 2, 0), new Vector3(1,4,0)));
+            primitives.Add(new Triangle(2, new Vector3(2,5,0), new Vector3(4,6,0), new Vector3(5,7,0)));
+            primitives.Add(new Triangle(3, new Vector3(5,7,0), new Vector3(6,7,0), new Vector3(7,6,7)));
+            primitives.Add(new Triangle(4, new Vector3(4,6,0), new Vector3(5,8,0), new Vector3(6,9,0)));
+            primitives.Add(new Triangle(5, new Vector3(10,15,0), new Vector3(11,14,0), new Vector3(12,13,0)));;
             foreach (Triangle triangle in primitives) {
                 triangle.Print();
             }
             
+            BVHTree.SetSplitMethod("MIDDLE");
+            //BVHTree.SetSplitMethod("EQUALCOUNTS");
+            //BVHTree.SetSplitMethod("SAH");
+            
             BVHNode root = BVHTree.BuildTree(primitives);
             BVHTree.PrintTree(root);
             
-            
+            // Test the BVH with a Ray Intersection
+            Ray ray = new Ray(
+                    new Vector3(0,0,0),
+                    new Vector3(0,5,0)
+                    );
+
+            List<int> hits = BVHTree.RayCast(root, ray);
+            for (int i = 0; i < hits.Count; i++) {
+                Triangle triangle = primitives[hits[i]];
+                Console.WriteLine($"Ray Hit with Triangle {triangle.ID}");
+            }
+
+
         }
     }
 }

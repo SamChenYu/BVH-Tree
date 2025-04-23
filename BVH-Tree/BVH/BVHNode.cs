@@ -22,6 +22,7 @@ namespace BVH_Tree.BVH {
         public int NPrimitives { get; set; }
         
         
+        public bool IsLeaf { get; set; }
         public String Value { get; set; }
         
 
@@ -46,6 +47,7 @@ namespace BVH_Tree.BVH {
             Left = null;
             Right = null;
             UpdateValue();
+            IsLeaf = true;
         }
 
         public void InitInterior(int axis, BVHNode left, BVHNode right) {
@@ -56,6 +58,7 @@ namespace BVH_Tree.BVH {
             Bounds = new Bounds3();
             Bounds.InitBounds(Left.Bounds, Right.Bounds);
             UpdateValue();
+            IsLeaf = false;
         }
         
         

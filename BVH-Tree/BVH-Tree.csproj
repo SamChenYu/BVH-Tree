@@ -49,6 +49,7 @@
         <Compile Include="Scene\Triangle.cs" />
         <Compile Include="Utils\Bounds3.cs" />
         <Compile Include="Utils\MathUtils.cs" />
+        <Compile Include="Utils\Ray.cs" />
         <Compile Include="Utils\Vector3.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>

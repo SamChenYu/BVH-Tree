@@ -6,7 +6,11 @@ using BVH_Tree.Utils;
 namespace BVH_Tree.BVH {
     public static class BVHTree {
         
-        private static string SPLIT_METHOD = "EQUALCOUNTS"; // EQUALCOUNTS, MIDDLE, SAH
+        private static string SPLIT_METHOD = "MIDDLE"; // EQUALCOUNTS, MIDDLE, SAH
+        
+        public static void SetSplitMethod(string splitMethod) {
+            SPLIT_METHOD = splitMethod;
+        }
         
         public static BVHNode BuildTree(List<Triangle> primitives) {
             List<PrimitiveInfo> primitivesInfo = GetPrimitveInfo(primitives);
@@ -111,7 +115,6 @@ namespace BVH_Tree.BVH {
                             int midIndex = start;
                             float midpoint = (centroidMaxBounds.getAxis(axis) + centroidMinBounds.getAxis(axis)) / 2;
                             // Reorder primitives based on midpoint
-                            
                             for (int i = start; i < end; i++) {
                                 float centroid = primitiveInfo[i].Centroid.getAxis(axis);
                                 if (centroid < midpoint) {
@@ -121,17 +124,12 @@ namespace BVH_Tree.BVH {
                                     midIndex++;
                                 }
                             }
-                            
-                            
-                            
-
                             break;
                         case "EQUALCOUNTS":
-                            
-                            
+                            // TODO
                             break;
                         case "SAH":
-                            
+                            // TODO
                             break;
                     }
                 }
@@ -149,12 +147,12 @@ namespace BVH_Tree.BVH {
         
         
         // UTILS
-        public static void PrintTree(BVHNode Root) {
+        public static void PrintTree(BVHNode root) {
             // Breadth first search for print ordering
-            if (Root == null) return;
+            if (root == null) return;
             
             Queue<BVHNode> queue = new Queue<BVHNode>();
-            queue.Enqueue(Root);
+            queue.Enqueue(root);
             int treeDepth = 0;
             while (queue.Count > 0) {
                 int levelCount = queue.Count;
@@ -171,6 +169,32 @@ namespace BVH_Tree.BVH {
                 treeDepth++;
             }
         }
+        
+        public static List<int> RayCast(BVHNode root, Ray ray) {
+            List<int> hits = new List<int>(); // return indices of primitives hit by ray
+            if(root == null) return hits;
+            RayCastRecursive(root, ray, hits);
+            return hits;
+        }
+
+        public static void RayCastRecursive(BVHNode node, Ray ray, List<int> hits) {
+
+            if (node == null) return;
+
+            if (!Ray.IntersectsAABB(ray, node.Bounds)) return;
+
+            if (node.IsLeaf) {
+                for(int i=node.FirstPrimOffset; i<node.FirstPrimOffset + node.NPrimitives; i++) {
+                    hits.Add(i); // !! Technically not a primitive hit, but the bounding box hit
+                }
+            }
+            else {
+                // Intersect with left and right children
+                RayCastRecursive(node.Left, ray, hits);
+                RayCastRecursive(node.Right, ray, hits);
+            }
+        }
+
 
     }
 }

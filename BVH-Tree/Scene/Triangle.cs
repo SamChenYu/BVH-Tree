@@ -5,12 +5,14 @@ using BVH_Tree.Utils;
 namespace BVH_Tree.Scene {
 
     public class Triangle {
-    
+        
+        public int ID { get; set; }
         public Vector3 V1 { get; set; }
         public Vector3 V2 { get; set; }
         public Vector3 V3 { get; set; }
         
-        public Triangle(Vector3 v1, Vector3 v2, Vector3 v3) {
+        public Triangle(int ID, Vector3 v1, Vector3 v2, Vector3 v3) {
+            this.ID = ID;
             V1 = v1;
             V2 = v2;
             V3 = v3;
