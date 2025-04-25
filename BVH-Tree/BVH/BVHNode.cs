@@ -7,58 +7,58 @@ namespace BVH_Tree.BVH {
         
         
         /* If left and right are null, then it is a LEAF node */
-        public BVHNode Left { get; set; }
-        public BVHNode Right { get; set; }
+        public BVHNode left { get; set; }
+        public BVHNode right { get; set; }
         
         /* The Bounds of ALL children */
-        public Bounds3 Bounds { get; set; }
+        public Bounds3 bounds { get; set; }
         
         /* Coordinate axis which primitive children are split */
-        public int SplitAxis { get; set; }
+        public int splitAxis { get; set; }
         
         /* Which primitives are stored in the leaf (primitives[FirstPrimeOffset] => primitives[FirstPrimOffset + NPrimitives] */
-        public int FirstPrimOffset { get; set; }
+        public int firstPrimOffset { get; set; }
         
-        public int NPrimitives { get; set; }
+        public int nPrimitives { get; set; }
         
         
-        public bool IsLeaf { get; set; }
-        public String Value { get; set; }
+        public bool isLeaf { get; set; }
+        public String value { get; set; }
         
 
         public BVHNode() {
-            Left = null;
-            Right = null;
+            left = null;
+            right = null;
         }
 
         public void UpdateValue() {
-            if (Left == null && Right == null) {
-                Value = $"Leaf [{FirstPrimOffset} - {FirstPrimOffset + NPrimitives}]";
+            if (left == null && right == null) {
+                value = $"Leaf [{firstPrimOffset} - {firstPrimOffset + nPrimitives}]";
             }
             else {
-                Value = $"Interior [Axis: {SplitAxis}, Bounds: {Bounds.ToString()}]";
+                value = $"Interior [Axis: {splitAxis}, Bounds: {bounds.ToString()}]";
             }
         }
 
         public void InitLeaf(int first, int n, Bounds3 bounds) {
-            FirstPrimOffset = first;
-            NPrimitives = n;
-            Bounds = bounds;
-            Left = null;
-            Right = null;
+            firstPrimOffset = first;
+            nPrimitives = n;
+            this.bounds = bounds;
+            left = null;
+            right = null;
             UpdateValue();
-            IsLeaf = true;
+            isLeaf = true;
         }
 
         public void InitInterior(int axis, BVHNode left, BVHNode right) {
-            SplitAxis = axis;
-            Right = right;
-            Left = left;
-            NPrimitives = 0;
-            Bounds = new Bounds3();
-            Bounds.InitBounds(Left.Bounds, Right.Bounds);
+            splitAxis = axis;
+            this.right = right;
+            this.left = left;
+            nPrimitives = 0;
+            bounds = new Bounds3();
+            bounds.initBounds(left.bounds, right.bounds);
             UpdateValue();
-            IsLeaf = false;
+            isLeaf = false;
         }
         
         

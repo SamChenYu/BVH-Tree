@@ -8,19 +8,19 @@ namespace BVH_Tree.BVH {
         
         private static string SPLIT_METHOD = "MIDDLE"; // EQUALCOUNTS, MIDDLE, SAH
         
-        public static void SetSplitMethod(string splitMethod) {
+        public static void setSplitMethod(string splitMethod) {
             SPLIT_METHOD = splitMethod;
         }
         
-        public static BVHNode BuildTree(List<Triangle> primitives) {
-            List<PrimitiveInfo> primitivesInfo = GetPrimitveInfo(primitives);
+        public static BVHNode buildTree(List<Triangle> primitives) {
+            List<PrimitiveInfo> primitivesInfo = getPrimitveInfo(primitives);
             List<Triangle> orderedPrimitives = new List<Triangle>();
             int totalNodes = 0;
-            BVHNode root = BuildRecursive(primitives, primitivesInfo, 0, primitivesInfo.Count, ref totalNodes, orderedPrimitives);
+            BVHNode root = buildRecursive(primitives, primitivesInfo, 0, primitivesInfo.Count, ref totalNodes, orderedPrimitives);
             return root;
         }
 
-        private static List<PrimitiveInfo> GetPrimitveInfo(List<Triangle> primitives) {
+        private static List<PrimitiveInfo> getPrimitveInfo(List<Triangle> primitives) {
             // Compute complete bounding box and centroid of bounding box
             List<PrimitiveInfo> primitivesInfo = new List<PrimitiveInfo>();
             for(int i=0; i<primitives.Count; i++) {
@@ -32,32 +32,32 @@ namespace BVH_Tree.BVH {
                  *   MinCorner(MinX, MinY, MinZ)
                  *   MaxCorner (MaxX, MaxY, MaxZ)
                  */
-                float MinX = Math.Min(triangle.V1.X, Math.Min(triangle.V2.X, triangle.V3.X));
-                float MinY = Math.Min(triangle.V1.Y, Math.Min(triangle.V2.Y, triangle.V3.Y));
-                float MinZ = Math.Min(triangle.V1.Z, Math.Min(triangle.V2.Z, triangle.V3.Z));
-                Vector3 MinCorner = new Vector3(MinX, MinY, MinZ);
-                float MaxX = Math.Max(triangle.V1.X, Math.Max(triangle.V2.X, triangle.V3.X));
-                float MaxY = Math.Max(triangle.V1.Y, Math.Max(triangle.V2.Y, triangle.V3.Y));
-                float MaxZ = Math.Max(triangle.V1.Z, Math.Max(triangle.V2.Z, triangle.V3.Z));
-                Vector3 MaxCorner = new Vector3(MaxX, MaxY, MaxZ);
+                float minX = Math.Min(triangle.V1.X, Math.Min(triangle.V2.X, triangle.V3.X));
+                float minY = Math.Min(triangle.V1.Y, Math.Min(triangle.V2.Y, triangle.V3.Y));
+                float minZ = Math.Min(triangle.V1.Z, Math.Min(triangle.V2.Z, triangle.V3.Z));
+                Vector3 minCorner = new Vector3(minX, minY, minZ);
+                float maxX = Math.Max(triangle.V1.X, Math.Max(triangle.V2.X, triangle.V3.X));
+                float maxY = Math.Max(triangle.V1.Y, Math.Max(triangle.V2.Y, triangle.V3.Y));
+                float maxZ = Math.Max(triangle.V1.Z, Math.Max(triangle.V2.Z, triangle.V3.Z));
+                Vector3 maxCorner = new Vector3(maxX, maxY, maxZ);
                 
-                Bounds3 PrimitiveBounds = new Bounds3(MinCorner, MaxCorner);
-                primitivesInfo.Add(new PrimitiveInfo(PrimitiveBounds, i));
+                Bounds3 primitiveBounds = new Bounds3(minCorner, maxCorner);
+                primitivesInfo.Add(new PrimitiveInfo(primitiveBounds, i));
             }
             return primitivesInfo;
         }
 
-        private static BVHNode BuildRecursive(List<Triangle> primitives, List<PrimitiveInfo> primitiveInfo, int start, int end, 
+        private static BVHNode buildRecursive(List<Triangle> primitives, List<PrimitiveInfo> primitiveInfo, int start, int end, 
                                                 ref int totalNodes, List<Triangle> orderedPrimitives ) {
             
             BVHNode node = new BVHNode();
             totalNodes++;
             
             // Compute bounds of all primitives in BVH Node
-            Bounds3 NodeBounds = new Bounds3();
+            Bounds3 nodeBounds = new Bounds3();
             for (int i = 0; i < primitiveInfo.Count; i++) {
-                NodeBounds.Union(primitiveInfo[i].Bounds.Min);
-                NodeBounds.Union(primitiveInfo[i].Bounds.Max);
+                nodeBounds.union(primitiveInfo[i].bounds.min);
+                nodeBounds.union(primitiveInfo[i].bounds.max);
             }
             int nPrimitives = end - start;
 
@@ -65,10 +65,10 @@ namespace BVH_Tree.BVH {
                 // Create leaf BVH Node
                 int firstPrimOffset = orderedPrimitives.Count;
                 for (int i = start; i < end; i++) {
-                    int primNumber = primitiveInfo[i].PrimitiveIndex;
+                    int primNumber = primitiveInfo[i].primitiveIndex;
                     orderedPrimitives.Add(primitives[primNumber]);
                 }
-                node.InitLeaf(firstPrimOffset, nPrimitives, NodeBounds);
+                node.InitLeaf(firstPrimOffset, nPrimitives, nodeBounds);
                 return node;
             }
             else {
@@ -77,16 +77,16 @@ namespace BVH_Tree.BVH {
                 Vector3 centroidMaxBounds = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
                 for (int i = start; i < end; i++) {
-                    centroidMinBounds.X = Math.Min(centroidMinBounds.X, primitiveInfo[i].Centroid.X);
-                    centroidMinBounds.Y = Math.Min(centroidMinBounds.Y, primitiveInfo[i].Centroid.Y);
-                    centroidMinBounds.Z = Math.Min(centroidMinBounds.Z, primitiveInfo[i].Centroid.Z);
-                    centroidMaxBounds.X = Math.Max(centroidMaxBounds.X, primitiveInfo[i].Centroid.X);
-                    centroidMaxBounds.Y = Math.Max(centroidMaxBounds.Y, primitiveInfo[i].Centroid.Y);
-                    centroidMaxBounds.Z = Math.Max(centroidMaxBounds.Z, primitiveInfo[i].Centroid.Z);
+                    centroidMinBounds.X = Math.Min(centroidMinBounds.X, primitiveInfo[i].centroid.X);
+                    centroidMinBounds.Y = Math.Min(centroidMinBounds.Y, primitiveInfo[i].centroid.Y);
+                    centroidMinBounds.Z = Math.Min(centroidMinBounds.Z, primitiveInfo[i].centroid.Z);
+                    centroidMaxBounds.X = Math.Max(centroidMaxBounds.X, primitiveInfo[i].centroid.X);
+                    centroidMaxBounds.Y = Math.Max(centroidMaxBounds.Y, primitiveInfo[i].centroid.Y);
+                    centroidMaxBounds.Z = Math.Max(centroidMaxBounds.Z, primitiveInfo[i].centroid.Z);
                 }
                 
                 // Choose the largest dimension to split amongst
-                Vector3 diff = NodeBounds.Max - NodeBounds.Min;
+                Vector3 diff = nodeBounds.max - nodeBounds.min;
                 int axis;
                 if (diff.X > diff.Y && diff.X > diff.Z) axis = 0; // X axis
                 else if (diff.Y > diff.Z) axis = 1; // Y axis
@@ -101,10 +101,10 @@ namespace BVH_Tree.BVH {
                     // Create a leaf node
                     int firstPrimOffset = orderedPrimitives.Count;
                     for (int i = start; i < end; i++) {
-                        int primNumber = primitiveInfo[i].PrimitiveIndex;
+                        int primNumber = primitiveInfo[i].primitiveIndex;
                         orderedPrimitives.Add(primitives[primNumber]);
                     }
-                    node.InitLeaf(firstPrimOffset, nPrimitives, NodeBounds);
+                    node.InitLeaf(firstPrimOffset, nPrimitives, nodeBounds);
                     return node;
                 }
                 else {
@@ -116,7 +116,7 @@ namespace BVH_Tree.BVH {
                             float midpoint = (centroidMaxBounds.getAxis(axis) + centroidMinBounds.getAxis(axis)) / 2;
                             // Reorder primitives based on midpoint
                             for (int i = start; i < end; i++) {
-                                float centroid = primitiveInfo[i].Centroid.getAxis(axis);
+                                float centroid = primitiveInfo[i].centroid.getAxis(axis);
                                 if (centroid < midpoint) {
                                     PrimitiveInfo temp = primitiveInfo[i];
                                     primitiveInfo[i] = primitiveInfo[midIndex];
@@ -134,8 +134,8 @@ namespace BVH_Tree.BVH {
                     }
                 }
                 
-                node.InitInterior(axis, BuildRecursive(primitives, primitiveInfo, start, mid,ref totalNodes, orderedPrimitives), 
-                            BuildRecursive(primitives, primitiveInfo, mid, end, ref totalNodes, orderedPrimitives));;   
+                node.InitInterior(axis, buildRecursive(primitives, primitiveInfo, start, mid,ref totalNodes, orderedPrimitives), 
+                            buildRecursive(primitives, primitiveInfo, mid, end, ref totalNodes, orderedPrimitives));;   
                 
                 
             }
@@ -147,7 +147,7 @@ namespace BVH_Tree.BVH {
         
         
         // UTILS
-        public static void PrintTree(BVHNode root) {
+        public static void printTree(BVHNode root) {
             // Breadth first search for print ordering
             if (root == null) return;
             
@@ -160,9 +160,9 @@ namespace BVH_Tree.BVH {
 
                 for (int i = 0; i < levelCount; i++) {
                     BVHNode node = queue.Dequeue();
-                    currentLevel += $"({node.Value})" ;
-                    if(node.Left != null) queue.Enqueue(node.Left);
-                    if (node.Right != null) queue.Enqueue(node.Right);
+                    currentLevel += $"({node.value})" ;
+                    if(node.left != null) queue.Enqueue(node.left);
+                    if (node.right != null) queue.Enqueue(node.right);
                 }
                 
                 Console.WriteLine($"Depth: {treeDepth} : {currentLevel}");
@@ -181,17 +181,17 @@ namespace BVH_Tree.BVH {
 
             if (node == null) return;
 
-            if (!Ray.IntersectsAABB(ray, node.Bounds)) return;
+            if (!Ray.intersectsAABB(ray, node.bounds)) return;
 
-            if (node.IsLeaf) {
-                for(int i=node.FirstPrimOffset; i<node.FirstPrimOffset + node.NPrimitives; i++) {
+            if (node.isLeaf) {
+                for(int i=node.firstPrimOffset; i<node.firstPrimOffset + node.nPrimitives; i++) {
                     hits.Add(i); // !! Technically not a primitive hit, but the bounding box hit
                 }
             }
             else {
                 // Intersect with left and right children
-                RayCastRecursive(node.Left, ray, hits);
-                RayCastRecursive(node.Right, ray, hits);
+                RayCastRecursive(node.left, ray, hits);
+                RayCastRecursive(node.right, ray, hits);
             }
         }
 
