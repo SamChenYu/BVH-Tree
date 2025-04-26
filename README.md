@@ -47,8 +47,8 @@ Ray cast at Origin(11,15,1) Direction (0,0,1)
 
 Depth: 0 :  <<(Interior [Axis: 1, Bounds: Min: (0, 1, 0), Max: (12, 15, 7)])>> 
 Depth: 1 :  <<(Interior [Axis: 1, Bounds: Min: (0, 1, 0), Max: (5, 7, 0)])>>  <<(Interior [Axis: 1, Bounds: Min: (4, 6, 0), Max: (12, 15, 7)])>> 
-Depth: 2 :  <<(Leaf [0 - 1 [Bounds: Min: (0, 1, 0), Max: (3, 4, 0)]])>>  <<(Leaf [1 - 2 [Bounds: Min: (2, 5, 0), Max: (5, 7, 0)]])>>  <<(Leaf [2 - 3 [Bounds: Min: (5, 6, 0), Max: (7, 7, 7)]])>>  <<(Interior [Axis: 1, Bounds: Min: (4, 6, 0), Max: (12, 15, 1)])>> 
-Depth: 3 :  <<NULL>>  <<NULL>>  <<NULL>>  <<NULL>>  <<NULL>>  <<NULL>>  <<(Leaf [3 - 4 [Bounds: Min: (4, 6, 0), Max: (6, 9, 0)]])>>  <<(Leaf [4 - 5 [Bounds: Min: (10, 13, 0), Max: (12, 15, 1)]])>> 
+Depth: 2 :  <<(Leaf [0 - 1] [Bounds: Min: (0, 1, 0), Max: (3, 4, 0)]])>>  <<(Leaf [1 - 2] [Bounds: Min: (2, 5, 0), Max: (5, 7, 0)]])>>  <<(Leaf [2 - 3] [Bounds: Min: (5, 6, 0), Max: (7, 7, 7)]])>>  <<(Interior [Axis: 1, Bounds: Min: (4, 6, 0), Max: (12, 15, 1)])>> 
+Depth: 3 :  <<NULL>>  <<NULL>>  <<NULL>>  <<NULL>>  <<NULL>>  <<NULL>>  <<(Leaf [3 - 4] [Bounds: Min: (4, 6, 0), Max: (6, 9, 0)]])>>  <<(Leaf [4 - 5] [Bounds: Min: (10, 13, 0), Max: (12, 15, 1)]])>> 
 
 Hits:
 Ray Hit with Triangle 5
