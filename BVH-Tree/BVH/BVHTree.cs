@@ -55,7 +55,7 @@ namespace BVH_Tree.BVH {
             
             // Compute bounds of all primitives in BVH Node
             Bounds3 nodeBounds = new Bounds3();
-            for (int i = 0; i < primitiveInfo.Count; i++) {
+            for (int i = start; i < end; i++) {
                 nodeBounds.union(primitiveInfo[i].bounds.min);
                 nodeBounds.union(primitiveInfo[i].bounds.max);
             }
@@ -135,7 +135,7 @@ namespace BVH_Tree.BVH {
                 }
                 
                 node.InitInterior(axis, buildRecursive(primitives, primitiveInfo, start, mid,ref totalNodes, orderedPrimitives), 
-                            buildRecursive(primitives, primitiveInfo, mid, end, ref totalNodes, orderedPrimitives));;   
+                            buildRecursive(primitives, primitiveInfo, mid, end, ref totalNodes, orderedPrimitives));   
                 
                 
             }
