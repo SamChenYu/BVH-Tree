@@ -35,7 +35,7 @@ namespace BVH_Tree {
                     new Vector3(0,0,0)
                     );
 
-            List<int> hits = BVHTree.RayCast(root, ray);
+            List<int> hits = BVHTree.rayCast(root, ray);
             for (int i = 0; i < hits.Count; i++) {
                 Triangle triangle = primitives[hits[i]];
                 Console.WriteLine($"Ray Hit with Triangle {triangle.ID}");

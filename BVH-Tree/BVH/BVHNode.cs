@@ -31,7 +31,7 @@ namespace BVH_Tree.BVH {
             right = null;
         }
 
-        public void UpdateValue() {
+        public void updateValue() {
             if (left == null && right == null) {
                 value = $"Leaf [{firstPrimOffset} - {firstPrimOffset + nPrimitives} [Bounds: {bounds.toString()}]]";
             }
@@ -40,24 +40,24 @@ namespace BVH_Tree.BVH {
             }
         }
 
-        public void InitLeaf(int first, int n, Bounds3 bounds) {
+        public void initLeaf(int first, int n, Bounds3 bounds) {
             firstPrimOffset = first;
             nPrimitives = n;
             this.bounds = bounds;
             left = null;
             right = null;
-            UpdateValue();
+            updateValue();
             isLeaf = true;
         }
 
-        public void InitInterior(int axis, BVHNode left, BVHNode right) {
+        public void initInterior(int axis, BVHNode left, BVHNode right) {
             splitAxis = axis;
             this.right = right;
             this.left = left;
             nPrimitives = 0;
             bounds = new Bounds3();
             bounds.initBounds(left.bounds, right.bounds);
-            UpdateValue();
+            updateValue();
             isLeaf = false;
         }
         

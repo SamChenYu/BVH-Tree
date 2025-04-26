@@ -68,7 +68,7 @@ namespace BVH_Tree.BVH {
                     int primNumber = primitiveInfo[i].primitiveIndex;
                     orderedPrimitives.Add(primitives[primNumber]);
                 }
-                node.InitLeaf(firstPrimOffset, nPrimitives, nodeBounds);
+                node.initLeaf(firstPrimOffset, nPrimitives, nodeBounds);
                 return node;
             }
             else {
@@ -104,7 +104,7 @@ namespace BVH_Tree.BVH {
                         int primNumber = primitiveInfo[i].primitiveIndex;
                         orderedPrimitives.Add(primitives[primNumber]);
                     }
-                    node.InitLeaf(firstPrimOffset, nPrimitives, nodeBounds);
+                    node.initLeaf(firstPrimOffset, nPrimitives, nodeBounds);
                     return node;
                 }
                 else {
@@ -134,7 +134,7 @@ namespace BVH_Tree.BVH {
                     }
                 }
                 
-                node.InitInterior(axis, buildRecursive(primitives, primitiveInfo, start, mid,ref totalNodes, orderedPrimitives), 
+                node.initInterior(axis, buildRecursive(primitives, primitiveInfo, start, mid,ref totalNodes, orderedPrimitives), 
                             buildRecursive(primitives, primitiveInfo, mid, end, ref totalNodes, orderedPrimitives));   
                 
                 
@@ -170,14 +170,14 @@ namespace BVH_Tree.BVH {
             }
         }
         
-        public static List<int> RayCast(BVHNode root, Ray ray) {
+        public static List<int> rayCast(BVHNode root, Ray ray) {
             List<int> hits = new List<int>(); // return indices of primitives hit by ray
             if(root == null) return hits;
-            RayCastRecursive(root, ray, hits);
+            rayCastRecursive(root, ray, hits);
             return hits;
         }
 
-        public static void RayCastRecursive(BVHNode node, Ray ray, List<int> hits) {
+        public static void rayCastRecursive(BVHNode node, Ray ray, List<int> hits) {
 
             if (node == null) return;
 
@@ -190,8 +190,8 @@ namespace BVH_Tree.BVH {
             }
             else {
                 // Intersect with left and right children
-                RayCastRecursive(node.left, ray, hits);
-                RayCastRecursive(node.right, ray, hits);
+                rayCastRecursive(node.left, ray, hits);
+                rayCastRecursive(node.right, ray, hits);
             }
         }
 
