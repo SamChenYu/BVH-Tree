@@ -154,18 +154,26 @@ namespace BVH_Tree.BVH {
             Queue<BVHNode> queue = new Queue<BVHNode>();
             queue.Enqueue(root);
             int treeDepth = 0;
+
+            BVHNode nullNode = new BVHNode();
+            nullNode.value = "NULL";
+            
             while (queue.Count > 0) {
                 int levelCount = queue.Count;
                 string currentLevel = "";
 
                 for (int i = 0; i < levelCount; i++) {
                     BVHNode node = queue.Dequeue();
-                    currentLevel += $"({node.value})" ;
-                    if(node.left != null) queue.Enqueue(node.left);
-                    if (node.right != null) queue.Enqueue(node.right);
+                    String nodeValue = node.value;
+                    currentLevel += $" <<{nodeValue}>> " ;
+                    if (node.value == "NULL") continue;
+                    if(node.left != null) queue.Enqueue(node.left); else queue.Enqueue(nullNode);
+                    if (node.right != null) queue.Enqueue(node.right); else queue.Enqueue(nullNode);
                 }
-                
-                Console.WriteLine($"Depth: {treeDepth} : {currentLevel}");
+
+                if (currentLevel.Contains("Leaf") || currentLevel.Contains("Interior")) {
+                    Console.WriteLine($"Depth: {treeDepth} : {currentLevel}");
+                }
                 treeDepth++;
             }
         }

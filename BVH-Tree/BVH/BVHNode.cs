@@ -33,10 +33,10 @@ namespace BVH_Tree.BVH {
 
         public void updateValue() {
             if (left == null && right == null) {
-                value = $"Leaf [{firstPrimOffset} - {firstPrimOffset + nPrimitives} [Bounds: {bounds.toString()}]]";
+                value = $"(Leaf [{firstPrimOffset} - {firstPrimOffset + nPrimitives} [Bounds: {bounds.toString()}]])";
             }
             else {
-                value = $"Interior [Axis: {splitAxis}, Bounds: {bounds.toString()}]";
+                value = $"(Interior [Axis: {splitAxis}, Bounds: {bounds.toString()}])";
             }
         }
 
